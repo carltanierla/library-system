@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+Route::post('book/import', [BookController::class, 'importBooks'])->middleware(['auth', 'verified']);
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
