@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import PlaceholderPattern from '../components/PlaceholderPattern.vue';
+import { Plus } from 'lucide-vue-next';
+import Button from '../components/ui/button/Button.vue';
+import { ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -10,6 +13,28 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
 ];
+
+const successMessage = ref('');
+
+const form = useForm({
+    file: null
+})
+
+const getFile = (event: any) => {
+    form.file = event!.target!.files[0]
+}
+
+const submitForm = () => {
+    form.post('book/import', {
+        preserveScroll: true,
+        onSuccess: () =>  {
+            form.reset();
+            successMessage.value = 'File imported successfully';
+        }
+    });
+}
+
+
 </script>
 
 <template>
@@ -17,17 +42,21 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
+            <form @submit.prevent="submitForm">
+                <div>
+                    <div v-if="successMessage" v-text="successMessage" class="text-green-500 text-xs mt-1"></div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Select Excel File</label>
+                    <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file"  @input="getFile" required/>
+                    <div v-if="form.errors.file" v-text="form.errors.file" class="text-red-500 text-xs mt-1"></div>
+                    <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                        {{ form.progress.percentage }}%
+                    </progress>
                 </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-            </div>
+                <Button data-sidebar="trigger" variant="ghost" size="default" class="justify-self-end">
+                    <span>Import Book</span>
+                    <Plus />
+                </Button>
+            </form>
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
                 <PlaceholderPattern />
             </div>
