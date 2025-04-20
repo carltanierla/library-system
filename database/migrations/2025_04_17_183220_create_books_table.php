@@ -22,7 +22,7 @@ return new class extends Migration
             $table->longText('title')->nullable();
             $table->string('author')->nullable();
             $table->year('year')->nullable();
-            $table->enum('status', ['borrowed', 'available'])->default('available');
+            $table->enum('status', ['borrowed', 'available', 'missing'])->default('available');
             $table->timestamps();
         });
     }

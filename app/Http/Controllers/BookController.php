@@ -28,13 +28,12 @@ class BookController extends Controller
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $spreadsheet = $reader->load($request->file('file'));
         $sheets = $spreadsheet->getAllSheets();
-
         foreach ($sheets as $index => $sheet) {
             $index = $index + 1;
             try {
                 (new FastExcel)->sheet($index)->import($request->file('file'), function ($data) use ($sheet) {
                     $data = array_change_key_case($data, CASE_LOWER);
-                    if ($data['title']) {
+                    if (!empty($data['title'])) {
                         return Book::create([
                             'title' => $data['title'],
                             'strand' => $sheet->getTitle(),
@@ -56,7 +55,7 @@ class BookController extends Controller
                 $this->error .= $e->getMessage();
             }
         }
-       return redirect('/dashboard');
+       return redirect('import-excel-file');
     }
 
 
