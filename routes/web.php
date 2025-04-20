@@ -14,16 +14,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('ImportFile');
     })->name('import-excel-file');
 
-    Route::get('/master-list', function () {
-        return Inertia::render('MasterList', [
-            'books' => Book::paginate(10)
-        ]);
-    })->name('master-list');
+    Route::get('/master-list', [BookController::class, 'index'])->name('master-list');
 
     Route::post('book/import', [BookController::class, 'importBooks'])->middleware(['auth', 'verified']);
 });
-
-Route::post('book/import', [BookController::class, 'importBooks'])->middleware(['auth', 'verified']);
 
 Route::get('/', function () {
     return Inertia::render('Welcome');

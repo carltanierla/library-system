@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\Reader\Exception\ReaderNotOpenedException;
@@ -62,9 +63,18 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return Inertia::render('MasterList', [
+            'books' => Book::query()
+                ->when($request->get('search'), function ($query, $search) {
+                    $query->where('title', 'like', "%{$search}%");
+                })
+                ->paginate(10)
+                ->withQueryString(),
+
+            'filters' => $request->only(['search']),
+        ]);
     }
 
     /**
