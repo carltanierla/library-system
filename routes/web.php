@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\BookController;
-use App\Models\Book;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,7 +15,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/master-list', [BookController::class, 'index'])->name('master-list');
 
-    Route::post('book/import', [BookController::class, 'importBooks'])->middleware(['auth', 'verified']);
+    Route::post('book/import', [BookController::class, 'importBooks']);
+
+    Route::post('book/create', [BookController::class, 'createBooks']);
 });
 
 Route::get('/', function () {
