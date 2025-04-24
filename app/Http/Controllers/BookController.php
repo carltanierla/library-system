@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Borrower;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use OpenSpout\Common\Exception\IOException;
@@ -111,5 +112,12 @@ class BookController extends Controller
         Book::create($request->all());
 
         return redirect('master-list')->with('success', 'Book created successfully');
+    }
+
+    public function getBooksBorrowHistory(Request $request)
+    {
+        return Inertia::render('BorrowHistory', [
+            'borrow_history' => Borrower::with('book:book_id,title')->paginate(10)
+        ]);
     }
 }

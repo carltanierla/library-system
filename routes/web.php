@@ -5,9 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/borrow-history', [BookController::class, 'getBooksBorrowHistory'])->name('borrow-history');
 
     Route::get('import-excel-file', function () {
         return Inertia::render('ImportFile');

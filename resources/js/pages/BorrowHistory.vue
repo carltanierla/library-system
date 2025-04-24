@@ -1,0 +1,35 @@
+<script setup lang="ts">
+import AppLayout from '@/layouts/AppLayout.vue';
+import { type BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/vue3';
+import BorrowTable from '@/components/BorrowTable.vue';
+import BorrowSearch from '@/components/BorrowSearch.vue';
+
+defineProps({
+    borrow_history: Object,
+})
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Books Borrow History',
+        href: '/borrow-history',
+    },
+];
+
+
+</script>
+
+<template>
+    <Head title="Books Borrow History" />
+
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="flex flex-1 flex-col gap-4 rounded-xl">
+            <div class="relative min-h-[100vh] flex-1 overflow-x-auto overflow-y-auto rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min flex flex-col justify-between my-1">
+                <div class="w-full flex">
+                    <BorrowSearch />
+                </div>
+                <BorrowTable :borrow_history="borrow_history"/>
+            </div>
+        </div>
+    </AppLayout>
+</template>
