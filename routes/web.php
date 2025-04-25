@@ -15,6 +15,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('book/import', [BookController::class, 'importBooks']);
 
+    Route::post('borrow-history/export', [BookController::class, 'exportBookBorrowHistory']);
+
     Route::post('book/create', [BookController::class, 'createBooks']);
 });
 

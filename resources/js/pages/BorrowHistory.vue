@@ -7,6 +7,7 @@ import BorrowSearch from '@/components/BorrowSearch.vue';
 
 defineProps({
     borrow_history: Object,
+    filters: Object
 })
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -24,9 +25,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-1 flex-col gap-4 rounded-xl">
-            <div class="relative min-h-[100vh] flex-1 overflow-x-auto overflow-y-auto rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min flex flex-col justify-between my-1">
-                <div class="w-full flex">
-                    <BorrowSearch />
+            <div class="relative min-h-[100vh] flex flex-col flex-1 overflow-x-auto overflow-y-auto rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min my-1">
+                <div class="w-full flex flex-row justify-end">
+                    <BorrowSearch :filters="filters"/>
                 </div>
                 <BorrowTable :borrow_history="borrow_history"/>
             </div>

@@ -31,7 +31,7 @@ const headers = reactive([
         </tr>
         <tr v-else v-for="borrower in borrow_history?.data" :key="borrower.borrower_id" class="bg-white border-b dark:bg-sidebar dark:border-gray-700 border-gray-200">
             <td rowspan="1" class="text-center px-3 py-2.5 font-medium text-gray-900 dark:text-white dark:bg-gray-800">
-                {{ borrower.book.title }}
+                {{ borrower.books.title }}
             </td>
             <td rowspan="1" class="text-center px-3 py-2.5 font-medium text-gray-900 dark:text-white">
                 {{ borrower.borrower_name }}

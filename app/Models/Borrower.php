@@ -33,7 +33,7 @@ class Borrower extends Model
      */
     protected $hidden = ['created_at', 'updated_at'];
 
-    public function book(): BelongsTo
+    public function books(): BelongsTo
     {
         return $this->belongsTo(Book::class, 'book_id', 'book_id');
     }
@@ -41,14 +41,14 @@ class Borrower extends Model
     protected function borrowedAt(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(' F m Y h:i A (l)'),
+            get: fn($value) => Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(' F d Y h:i:s A (l)'),
         );
     }
 
     protected function returnedAt(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => $value ?? 'Not yet returned',
+            get: fn($value) => $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(' F d Y h:i:s A (l)') : 'Not yet returned'
         );
     }
 }
