@@ -79,7 +79,7 @@ const submitForm = () => {
                          <form @submit.prevent="submitForm" class="justify-self-center mt-10">
                              <div class="flex w-full flex-col gap-4 rounded-xl p-4 items-center">
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Select Excel File</label>
-                                <input class="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file" @input="getFile" required/>
+                                <input class="block w-80 file:px-4 file:py-2 file:bg-gray-700 dark:file:text-white file:border-gray-300 file:rounded-md text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 cursor-pointer dark:text-white focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 hover:file:bg-gray-500" id="file_input" type="file" @input="getFile" required/>
                                  <div v-if="form.progress" role="status" class="flex flex-col justify-between items-center">
                                      <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                                          <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -88,7 +88,7 @@ const submitForm = () => {
                                      <span>Processing... </span>
                                  </div>
 
-                                <Button data-sidebar="trigger" variant="secondary" size="default" class="justify-self-end mt-2">
+                                <Button data-sidebar="trigger" variant="secondary" size="default" class="justify-self-end mt-2 bg-gray-700 text-gray-400 hover:bg-gray-500 dark:text-white">
                                     <span>Import Book</span>
                                     <Import />
                                 </Button>

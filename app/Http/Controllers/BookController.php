@@ -46,7 +46,8 @@ class BookController extends Controller
                             'type' => $data['type'],
                             'author' => $data['author'],
                             'status' => 'available',
-                            'year' => $data['year']
+                            'year' => $data['year'],
+                            'image' => isset($data['image']) ?: 'book' . rand(1,4) . '.png'
                         ]);
                     }
                 });
@@ -98,6 +99,16 @@ class BookController extends Controller
             'type'       => Book::distinct()->whereNot('type', '=', '')->get(['type'])->toArray(),
             'status'     => Book::distinct()->whereNot('status', '=', '')->get(['status'])->toArray(),
         ];
+    }
+
+    public function getAllBooks()
+    {
+        return ['books' => Book::all()];
+    }
+
+    public function fetchFrontBooks()
+    {
+        return Inertia::render('Welcome', $this->getAllBooks());
     }
 
     /**
@@ -156,7 +167,18 @@ class BookController extends Controller
 
     public function exportBookBorrowHistory(Request $request)
     {
-        (new FastExcel($this->getBorrowHistory($request)['borrow_history']->toArray()['data']))->export(public_path('/storage/file.xlsx'));
+        $histories = [];
+        $data = $this->getBorrowHistory($request)['borrow_history']->toArray()['data'];
+        foreach ($data as $borrowHistory) {
+            $histories[] =  [
+                'Book Title' => $borrowHistory['books']['title'],
+                'Borrower Name' => $borrowHistory['borrower_name'],
+                'Borrower Section' => $borrowHistory['borrower_section'],
+                'Borrowed Date' => $borrowHistory['borrowed_at'],
+                'Returned Date' => $borrowHistory['returned_at'],
+            ];
+        }
 
+        return (new FastExcel($histories))->download('History-'. now()->toDateString() . '.xlsx');
     }
 }

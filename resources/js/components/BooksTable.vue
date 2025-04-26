@@ -36,7 +36,7 @@ const headers = reactive([
         <tr v-if="books?.data < 1">
             <td colspan="12" rowspan="1" class="px-3 py-2.5 text-3xl font-bold text-gray-900 dark:text-white text-center">No Data Available</td>
         </tr>
-        <tr v-else v-for="book in books?.data" :key="book.book_id" class="bg-white border-b dark:bg-sidebar dark:border-gray-700 border-gray-200">
+        <tr v-else v-for="book in books?.data" :key="book.book_id" class="bg-gray-100 border-b dark:bg-sidebar dark:border-gray-700 border-gray-200">
             <td rowspan="1" class="px-3 py-2.5 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 {{ book.book_id }}
             </td>
@@ -97,7 +97,7 @@ const headers = reactive([
             <div>
                 <nav class="isolate inline-flex -space-x-px rounded-md shadow-xs" aria-label="Pagination">
                     <template v-for="(link, index) in books?.links" :key="index">
-                        <Link v-if="link.url" :href="link.url" :class="{'bg-gray-500': link.active}" class="relative font-semibold inline-flex items-center px-4 py-2 text-sm text-gray-900 dark:text-white ring-1 ring-gray-300 ring-inset hover:bg-gray-500 focus:z-20 focus:outline-offset-0">
+                        <Link v-if="link.url" :href="link.url" :class="{'bg-gray-700 text-white dark:bg-gray-300 dark:text-gray-900': link.active}" class="relative font-semibold inline-flex items-center px-4 py-2 text-sm text-gray-900 dark:text-white ring-1 ring-gray-300 ring-inset hover:bg-gray-500 hover:text-white focus:z-20 focus:outline-offset-0">
                             <span  v-html="link.label"></span>
                         </Link>
                         <span v-else v-html="link.label" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-500 ring-1 ring-gray-300 ring-inset"></span>

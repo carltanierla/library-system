@@ -15,14 +15,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('book/import', [BookController::class, 'importBooks']);
 
-    Route::post('borrow-history/export', [BookController::class, 'exportBookBorrowHistory']);
+    Route::get('borrow-history/export', [BookController::class, 'exportBookBorrowHistory'])->name('export');
 
     Route::post('book/create', [BookController::class, 'createBooks']);
 });
 
-Route::get('/', function () {
-    return Inertia::render('Welcome');
-})->name('home');
+Route::get('/', [BookController::class, 'fetchFrontBooks'])->name('home');
 
 
 

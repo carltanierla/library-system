@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('author')->nullable();
             $table->year('year')->nullable();
             $table->enum('status', ['borrowed', 'available', 'missing'])->default('available');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
