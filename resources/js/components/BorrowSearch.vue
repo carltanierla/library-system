@@ -7,6 +7,7 @@ import DateRangePicker from '@/components/DateRangePicker.vue';
 import Button from './ui/button/Button.vue';
 import { Plus } from 'lucide-vue-next';
 import { useRoute } from 'ziggy-js';
+import throttle from 'lodash/throttle';
 
 const props = defineProps({
     filters: Object,
@@ -49,9 +50,9 @@ const submitExcelDownloadForm = computed(() => {
     })
 })
 
-watch(() => [searchForm.search, searchForm.start_date, searchForm.end_date], () => {
+watch(() => [searchForm.search, searchForm.start_date, searchForm.end_date], throttle(() => {
     submitForm();
-},{ deep: true })
+}, 1000),{ deep: true })
 
 
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/vue3';
-import Breadcrumbs from '@/components/Breadcrumbs.vue';
+import { Head } from '@inertiajs/vue3';
+import AppLayout from '@/layouts/AppLayout.vue';
 
 defineProps( {
     books: Array
@@ -13,7 +13,7 @@ const getImage = (image) => {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Home',
+        title: 'Research Department Library Management System',
         href: '/',
     },
 ];
@@ -21,29 +21,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 <template>
     <Head title="Home" />
-    <header
-        class="flex h-16 shrink-0 items-center justify-between gap-2 border-b border-sidebar-border/70 px-6 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 md:px-4"
-    >
-        <div class="flex items-center gap-2">
-            <template v-if="breadcrumbs.length > 0">
-                <Breadcrumbs :breadcrumbs="breadcrumbs" />
-            </template>
-
-        </div>
-        <div>
-            <span class="mx-5">Are you an Admin?</span>
-            <Link
-                :href="route('master-list')"
-                class=" inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
-            >
-                Log in
-            </Link>
-        </div>
-    </header>
+    <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="grid grid-rows-1 gap-6 grid-cols-3">
-                <div v-for="(book, index) in books" :key="index" class="flex flex-wrap justify-center gap-6 col-span-1 row-span-2 relative">
-                    <div class="relative w-full h-100 p-4 border-gray-800 rounded-2xl shadow-lg card transition-transform duration-300 flex flex-col items-center">
+                <div
+                    v-for="(book, index) in books" :key="index" class="flex flex-wrap justify-center gap-6 col-span-1 row-span-2 relative">
+                    <div
+
+                        class="relative w-full h-100 p-4 border-gray-800 rounded-2xl shadow-lg card transition-transform duration-300 flex flex-col items-center">
                         <div class="border-animation"></div>
                         <div class="card-content">
                             <img :src="getImage(book.image)" alt="" class="w-56 h70 rounded-lg object-cover">
@@ -72,7 +57,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </div>
             </div>
         </div>
-<!--    </AppLayout>-->
+    </AppLayout>
 </template>
 
 <style scoped>

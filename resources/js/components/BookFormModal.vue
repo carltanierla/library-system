@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import Button from '../components/ui/button/Button.vue';
 import { useForm } from '@inertiajs/vue3';
+import { onMounted } from 'vue';
+
+const props = defineProps({
+    isEditMode: Boolean,
+    bookEditValues: Object
+})
 
 const emit = defineEmits([
     'closeModal',
-    'successCreateUser'
+    'successFormSubmit'
 ])
 
 const form = useForm({
+    book_id: '' as number | string,
     title: '' as string,
     author: '' as string,
     year: '' as string,
@@ -20,22 +27,42 @@ const form = useForm({
 })
 
 const submitForm = () => {
-    form.post('book/create', {
-        preserveScroll: true,
-        onSuccess: () => {
-            closeModal();
-            emit('successCreateUser', 'Book Created Successfully');
-        },
-        onError: () => {
-
-        }
-    })
+    if (props.isEditMode) {
+        form.put(route('update-book', form.book_id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeModal();
+                emit('successFormSubmit', 'Book Updated Successfully');
+            }
+        });
+    } else {
+        form.post('book/create', {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeModal();
+                emit('successFormSubmit', 'Book Created Successfully');
+            }
+        })
+    }
 }
 
 const closeModal = () => {
-    emit('closeModal');
     form.reset();
+    emit('closeModal');
 }
+
+
+onMounted(() => {
+        form.book_id = props.bookEditValues?.book_id;
+        form.title = props.bookEditValues?.title;
+        form.author = props.bookEditValues?.author;
+        form.year = props.bookEditValues?.year;
+        form.strand = props.bookEditValues?.strand;
+        form.reference = props.bookEditValues?.reference;
+        form.category = props.bookEditValues?.category;
+        form.track = props.bookEditValues?.track;
+        form.type = props.bookEditValues?.type;
+})
 </script>
 
 <template>
@@ -47,7 +74,8 @@ const closeModal = () => {
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 dark:bg-gray-800">
                         <div class="sm:flex sm:items-start">
                             <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                <h3 class="font-semibold text-4xl text-gray-900 dark:text-white" id="modal-title">Create Book</h3>
+                                <h3 v-if="isEditMode" class="font-semibold text-4xl text-gray-900 dark:text-white" id="modal-title">Edit Book</h3>
+                                <h3 v-else class="font-semibold text-4xl text-gray-900 dark:text-white" id="modal-title">Add Book</h3>
                                 <div class="mt-10">
                                     <form @submit.prevent="submitForm">
                                         <div class="mb-6">

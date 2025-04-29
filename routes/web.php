@@ -17,7 +17,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('borrow-history/export', [BookController::class, 'exportBookBorrowHistory'])->name('export');
 
-    Route::post('book/create', [BookController::class, 'createBooks']);
+    Route::post('book/create', [BookController::class, 'createBook']);
+
+    Route::put('books/update/{book_id}', [BookController::class, 'updateBook'])->name('update-book');
+
+    Route::delete('books/delete/{book_id}', [BookController::class, 'deleteBook'])->name('delete-book');
 });
 
 Route::get('/', [BookController::class, 'fetchFrontBooks'])->name('home');

@@ -74,7 +74,7 @@ class BookController extends Controller
     public function getBooks(Request $request)
     {
        return [
-            'books' => Book::query()
+            'books' => Inertia::defer(fn () => Book::query()
                         ->when($request->get('search'), function ($query, $search) {
                             $query->where(function ($query) use ($search) {
                                 return $query->where('title', 'like', "%{$search}%")
@@ -90,14 +90,15 @@ class BookController extends Controller
                         })
                         ->orderBy('book_id', 'desc')
                         ->paginate(10)
-                        ->withQueryString(),
+                        ->withQueryString()
+            ),
 
-            'filters' => $request->only(['search', 'category', 'category_value']),
+            'filters' => Inertia::defer(fn () => $request->only(['search', 'category', 'category_value'])),
 
-            'category'   => Book::distinct()->whereNot('category', '=', '')->get(['category'])->toArray(),
-            'track'      => Book::distinct()->whereNot('track', '=', '')->get(['track',])->toArray(),
-            'type'       => Book::distinct()->whereNot('type', '=', '')->get(['type'])->toArray(),
-            'status'     => Book::distinct()->whereNot('status', '=', '')->get(['status'])->toArray(),
+            'category'   => Inertia::defer(fn () => Book::distinct()->whereNot('category', '=', '')->get(['category'])->toArray()),
+            'track'      => Inertia::defer(fn () => Book::distinct()->whereNot('track', '=', '')->get(['track',])->toArray()),
+            'type'       => Inertia::defer(fn () => Book::distinct()->whereNot('type', '=', '')->get(['type'])->toArray()),
+            'status'     => Inertia::defer(fn () => Book::distinct()->whereNot('status', '=', '')->get(['status'])->toArray())
         ];
     }
 
@@ -114,7 +115,7 @@ class BookController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function createBooks(Request $request)
+    public function createBook(Request $request)
     {
         $request->validate([
             'title'     => 'required|unique:books',
@@ -126,6 +127,28 @@ class BookController extends Controller
         return redirect('master-list')->with('success', 'Book created successfully');
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function updateBook(Request $request)
+    {
+        $request->validate([
+            'title'     => 'required|unique:books,title,'. $request->get('book_id'). ',book_id',
+            'year'      => 'nullable|digits:4|integer|min:1900|max:'.now()->format('Y')
+        ]);
+
+        Book::where('book_id', $request->get('book_id'))->update($request->all());
+
+        return redirect('master-list')->with('success', 'Book updated successfully');
+    }
+
+    public function deleteBook(Request $request)
+    {
+        Book::where('book_id', $request->get('book_id'))->delete();
+
+        return redirect('master-list')->with('success', 'Book updated successfully');
+    }
+
     public function getBooksBorrowHistory(Request $request)
     {
         return Inertia::render('BorrowHistory', $this->getBorrowHistory($request));
@@ -134,7 +157,7 @@ class BookController extends Controller
     public function getBorrowHistory(Request $request)
     {
         return [
-            'borrow_history' => Borrower::query()
+            'borrow_history' => Inertia::defer(fn () => Borrower::query()
                 ->whereHas('books', function ($query) use ($request) {
                     $query->when($request->get('search'), function ($query, $search) {
                         return $query->where('title', 'like', "%{$search}%");
@@ -159,9 +182,10 @@ class BookController extends Controller
                 })
                 ->with('books:book_id,title')
                 ->paginate(10)
-                ->withQueryString(),
+                ->withQueryString()
+            ),
 
-            'filters' => $request->only(['search', 'start_date', 'end_date']),
+            'filters' => Inertia::defer(fn () =>$request->only(['search', 'start_date', 'end_date']))
         ];
     }
 
