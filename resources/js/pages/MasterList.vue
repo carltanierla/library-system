@@ -26,20 +26,6 @@ defineProps({
     status: Array
 })
 
-const headers = reactive([
-    'book id',
-    'title',
-    'author',
-    'year',
-    'strand',
-    'reference',
-    'category',
-    'track',
-    'type',
-    'status',
-    'Actions'
-]);
-
 const isModalOpen = ref(false);
 const isToastOpen = ref(false);
 let toastMessage = ('');
@@ -61,7 +47,7 @@ const setToastMessage = (message: string) => {
         <div class="flex flex-1 flex-col gap-4 rounded-xl">
             <div class="relative min-h-[100vh] flex-1 overflow-x-auto overflow-y-auto rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min flex flex-col justify-between my-1">
                 <div class="w-full flex justify-between">
-                    <Button @click="isModalOpen = !isModalOpen" data-sidebar="trigger" variant="secondary" size="lg" class="border border-gray-500 rounded-lg justify-start my-1 py-5 text-center">
+                    <Button @click="isModalOpen = !isModalOpen" data-sidebar="trigger" variant="secondary" size="lg" class="border border-gray-500 rounded-lg justify-start my-1 py-5 text-center dark:bg-gray-700">
                         <span>Add Book</span>
                         <Plus />
                     </Button>
@@ -72,7 +58,7 @@ const setToastMessage = (message: string) => {
                                 :status
                     />
                 </div>
-                <BooksTable :headers="headers" :books="books"/>
+                <BooksTable :books="books"/>
             </div>
         </div>
         <transition name="modal">

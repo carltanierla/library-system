@@ -43,7 +43,7 @@ watch(() => searchForm.search!, () => {
 </script>
 
 <template>
-    <div class="flex">
+    <div class="flex p-1">
         <form class="max-w-sm mx-2">
             <select v-model="searchForm.category" id="filters" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <option :value="null">Choose Filter Option</option>
@@ -53,7 +53,8 @@ watch(() => searchForm.search!, () => {
         </form>
         <form class="max-w-sm mx-2">
             <select v-model="searchForm.category_value" id="filters" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" @change="getDataByCategoryValue">
-                <option :value="null">Choose Filter Option</option>
+                <option v-if="searchForm.category" :value="null">Choose Filter Value</option>
+                <option v-else  :value="null"><- Choose Filter Option First</option>
                 <option v-for="(value, index) in props[searchForm.category]" :key="index" :value="value[searchForm.category]">{{ value[searchForm.category] }}</option>
             </select>
         </form>

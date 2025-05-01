@@ -1,11 +1,26 @@
 <script setup lang="ts">
 
 import { Link } from '@inertiajs/vue3';
+import { reactive } from 'vue';
 
 defineProps( {
-    headers: Array,
     books: Object
 })
+
+const headers = reactive([
+    'book id',
+    'title',
+    'author',
+    'year',
+    'strand',
+    'reference',
+    'category',
+    'track',
+    'type',
+    'status',
+    'Actions'
+]);
+
 </script>
 
 <template>

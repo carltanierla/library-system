@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Borrower;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use OpenSpout\Common\Exception\IOException;
@@ -111,5 +113,50 @@ class BookController extends Controller
         Book::create($request->all());
 
         return redirect('master-list')->with('success', 'Book created successfully');
+    }
+
+    public function getBooksBorrowHistory(Request $request)
+    {
+        return Inertia::render('BorrowHistory', $this->getBorrowHistory($request));
+    }
+
+    public function getBorrowHistory(Request $request)
+    {
+        return [
+            'borrow_history' => Borrower::query()
+                ->whereHas('books', function ($query) use ($request) {
+                    $query->when($request->get('search'), function ($query, $search) {
+                        return $query->where('title', 'like', "%{$search}%");
+                    });
+                })
+                ->when($request->get('search'), function ($query, $search) {
+                    return $query
+                        ->orWhere('borrower_name', 'like', "%{$search}%")
+                        ->orWhere('borrower_section', 'like', "%{$search}%");
+                })
+                ->when($request->get('start_date'), function ($query) use ($request) {
+                    $query->where(function ($query) use ($request) {
+                        return $query->orWhereBetween('borrowed_at', [
+                            Carbon::createFromFormat('m/d/Y', $request->get('start_date'))->startOfDay(),
+                            Carbon::createFromFormat('m/d/Y', $request->get('end_date'))->endOfDay()
+                            ])
+                            ->orWhereBetween('returned_at', [
+                                Carbon::createFromFormat('m/d/Y', $request->get('start_date'))->startOfDay(),
+                                Carbon::createFromFormat('m/d/Y', $request->get('end_date'))->endOfDay()
+                            ]);
+                    });
+                })
+                ->with('books:book_id,title')
+                ->paginate(10)
+                ->withQueryString(),
+
+            'filters' => $request->only(['search', 'start_date', 'end_date']),
+        ];
+    }
+
+    public function exportBookBorrowHistory(Request $request)
+    {
+        (new FastExcel($this->getBorrowHistory($request)['borrow_history']->toArray()['data']))->export(public_path('/storage/file.xlsx'));
+
     }
 }

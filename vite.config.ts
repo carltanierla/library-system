@@ -7,6 +7,16 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+    // server: {
+    //     host: 'library-system.com',
+    //     hmr: {
+    //         host: 'library-system.com',
+    //     },
+    //     cors: {
+    //         origin: 'http://library-system.com', // or the specific origin of your Laravel app
+    //         credentials: true,
+    //     }
+    // },
     plugins: [
         laravel({
             input: ['resources/js/app.ts'],
