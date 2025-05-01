@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\Reader\Exception\ReaderNotOpenedException;
@@ -28,13 +29,12 @@ class BookController extends Controller
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $spreadsheet = $reader->load($request->file('file'));
         $sheets = $spreadsheet->getAllSheets();
-
         foreach ($sheets as $index => $sheet) {
             $index = $index + 1;
             try {
                 (new FastExcel)->sheet($index)->import($request->file('file'), function ($data) use ($sheet) {
                     $data = array_change_key_case($data, CASE_LOWER);
-                    if ($data['title']) {
+                    if (!empty($data['title'])) {
                         return Book::create([
                             'title' => $data['title'],
                             'strand' => $sheet->getTitle(),
@@ -56,63 +56,60 @@ class BookController extends Controller
                 $this->error .= $e->getMessage();
             }
         }
-       return redirect('/dashboard');
+       return redirect('import-excel-file');
     }
 
 
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return Inertia::render('MasterList', $this->getBooks($request));
+    }
+
+    public function getBooks(Request $request)
+    {
+       return [
+            'books' => Book::query()
+                        ->when($request->get('search'), function ($query, $search) {
+                            $query->where(function ($query) use ($search) {
+                                return $query->where('title', 'like', "%{$search}%")
+                                    ->orWhere('author', 'like', "%{$search}%")
+                                    ->orWhere('year', 'like', "%{$search}%")
+                                    ->orWhere('reference', 'like', "%{$search}%");
+                            });
+                        })
+                        ->when($request->get('category_value'), function ($query) use ($request) {
+                            $query->where(function ($query) use ($request) {
+                                return $query->where($request->get('category'),  $request->get('category_value'));
+                            });
+                        })
+                        ->orderBy('book_id', 'desc')
+                        ->paginate(10)
+                        ->withQueryString(),
+
+            'filters' => $request->only(['search', 'category', 'category_value']),
+
+            'category'   => Book::distinct()->whereNot('category', '=', '')->get(['category'])->toArray(),
+            'track'      => Book::distinct()->whereNot('track', '=', '')->get(['track',])->toArray(),
+            'type'       => Book::distinct()->whereNot('type', '=', '')->get(['type'])->toArray(),
+            'status'     => Book::distinct()->whereNot('status', '=', '')->get(['status'])->toArray(),
+        ];
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function createBooks(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'title'     => 'required|unique:books',
+            'year'      => 'nullable|digits:4|integer|min:1900|max:'.now()->format('Y')
+        ]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        Book::create($request->all());
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Book $book)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Book $book)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Book $book)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Book $book)
-    {
-        //
+        return redirect('master-list')->with('success', 'Book created successfully');
     }
 }

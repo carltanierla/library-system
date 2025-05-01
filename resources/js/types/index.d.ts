@@ -35,4 +35,18 @@ export interface User {
     updated_at: string;
 }
 
+export interface Book {
+    book_id: number;
+    strand?: string;
+    reference?: string;
+    category?: string;
+    track?: string;
+    type?: string;
+    title: string;
+    author?: string;
+    year?: string;
+    status: string;
+}
+
+
 export type BreadcrumbItemType = BreadcrumbItem;
