@@ -13,7 +13,7 @@ const getImage = (image) => {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Research Department Library Management System',
+        title: 'Home',
         href: '/',
     },
 ];
