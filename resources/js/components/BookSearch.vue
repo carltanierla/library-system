@@ -2,6 +2,7 @@
 
 import { useForm } from '@inertiajs/vue3';
 import { reactive, watch } from 'vue';
+import throttle from 'lodash/throttle'
 
 const props = defineProps({
     filters: Object,
@@ -32,13 +33,13 @@ const getDataByCategoryValue = () => {
     })
 }
 
-watch(() => searchForm.search!, () => {
+watch(() => searchForm.search!, throttle(() => {
     searchForm.get('/master-list', {
         preserveState: true,
         preserveScroll: true,
         replace: true
     })
-})
+}, 1000));
 
 </script>
 

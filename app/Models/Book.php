@@ -28,6 +28,7 @@ class Book extends Model
         'author',
         'year',
         'status',
+        'image',
         'created_at',
         'updated_at',
     ];
